@@ -42,8 +42,8 @@ const mouseFunc = (imgWrap) => {
 
     imgWrap.onmousemove = (e) => {
       currX = e.clientX
-      const length = currX - firstX
-      imgWrap.style.transform = `rotateY(${currRotate + length * 0.1}deg)`
+      const lengthX = currX - firstX
+      imgWrap.style.transform = `rotateY(${currRotate + lengthX * 0.1}deg)`
     }
   }
   document.onmouseup = (e) => {
@@ -58,5 +58,6 @@ const mouseFunc = (imgWrap) => {
 // 获取当前rotate的值
 const getRotate = ($el) => {
   let str = $el && $el.style.transform
+  
   return str && +str.split('(')[1].split('deg)')[0]
 }
