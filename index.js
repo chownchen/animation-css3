@@ -30,7 +30,14 @@ const initPage = ($imgWrap) => {
     // 如果正在推拽，停止定时器触发运动
     if (mouseAbout || isOnClick) return false
     piece++
-    $imgWrap.style.transform = `rotateY(${currRotate + piece * 0.4}deg)`
+    let degNum = currRotate + piece * 0.4
+    if (degNum >= 360) {
+      degNum -= 360
+      currRotate = 0
+      piece = 0
+    }
+    
+    $imgWrap.style.transform = `rotateY(${degNum}deg)`
   }, 30)
 }
 
@@ -41,10 +48,10 @@ const EventFunc = ($imgWrap) => {
 const showCurrentPage = ($imgWrap, $item, index) => {
   // 点击时无拖拽则认定为点击
   if (Math.abs(moveLengthX) > 10) return false
-  console.log('-------------$item, index', $item, index)
   isOnClick = !isOnClick
   if (!isOnClick) return false
-  $imgWrap.style.transform = `rotateY(${index * -45}deg)`
+  let currentDeg = 360 - index * 45
+  $imgWrap.style.transform = `rotateY(${currentDeg === 360 ? 0 : currentDeg}deg)`
   $imgWrap.style.transition = `1s linear`
   // TODO 点击之后对当前点击item放大
 }
@@ -62,16 +69,20 @@ const mouseFunc = ($imgWrap) => {
     $imgWrap.onmousemove = (e) => {
       currX = e.clientX
       moveLengthX = currX - firstX
-      $imgWrap.style.transform = `rotateY(${currRotate + moveLengthX * 0.1}deg)`
+      let degNum = currRotate + moveLengthX * 0.1
+      if (degNum >= 360) {
+        degNum -= 360
+      }
+      $imgWrap.style.transform = `rotateY(${degNum}deg)`
     }
-  }
 
-  document.onmouseup = (e) => {
-    // 拖拽完毕时，获取当前rotate值，便于定时器运动平稳性
-    mouseAbout = false
-    currRotate = getRotate($imgWrap)
-    piece = 0
-    $imgWrap.onmousemove = null
+    document.onmouseup = (e) => {
+      // 拖拽完毕时，获取当前rotate值，便于定时器运动平稳性
+      mouseAbout = false
+      currRotate = getRotate($imgWrap)
+      piece = 0
+      $imgWrap.onmousemove = null
+    }
   }
 }
 
